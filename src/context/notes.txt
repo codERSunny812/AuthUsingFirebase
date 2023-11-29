@@ -1,0 +1,76 @@
+steps 
+1. create a context 
+2. attach your app with the firebase 
+
+initilize the authentication and start using its feature.
+
+import { createContext, useContext } from "react";
+import { initializeApp } from "firebase/app";
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  GoogleAuthProvider,
+  signInWithPopup,
+  FacebookAuthProvider
+} from "firebase/auth";
+
+// Firebase configuration
+const firebaseConfig = {
+  apiKey: "AIzaSyC1LET-VvUrvcmb84X67s9q_yqI-ETFu1M",
+  authDomain: "dummapp-cfd27.firebaseapp.com",
+  projectId: "dummapp-cfd27",
+  storageBucket: "dummapp-cfd27.appspot.com",
+  messagingSenderId: "897206616387",
+  appId: "1:897206616387:web:a684f06e04596088f1aff6",
+};
+
+// Initialize the app
+const firebaseApp = initializeApp(firebaseConfig);
+
+// Making instance of Firebase Auth
+const firebaseAppAuth = getAuth(firebaseApp);
+
+// instance of the GoogleAuthProvider to use its functionalities
+const GoogleAuth = new GoogleAuthProvider();
+
+// instance of facebook auth provider 
+const facebookAuth  = new FacebookAuthProvider();
+
+// Create a context
+export const FireBaseContext = createContext(null);
+
+// Firebase context provider
+const FirebaseCreatedContextProvider = (props) => {
+
+  // Function to create a user using email and password
+  const createUser = async (email, password) => {
+    try {
+      const userCredential = await createUserWithEmailAndPassword(
+        firebaseWebAppAuth,
+        email,
+        password
+      );
+      // You can do something with userCredential if needed
+      console.log("User created successfully:", userCredential);
+    } catch (error) {
+      console.error("Error creating user:", error.message);
+      throw error; // Rethrow the error to propagate it to the caller
+    }
+  };
+
+  const signUpUserWithGoogle = async () => {
+    await signInWithPopup(firebaseWebAppAuth,GoogleAuth);
+  };
+
+    const signUpUserWithFaceBook = async () => {
+        await signInWithPopup(firebaseWebAppAuth, facebookAuth);
+    };
+
+  return (
+    <FireBaseContext.Provider value={{createUser,signUpUserWithGoogle,signUpUserWithFaceBook}}>
+      {props.children}
+      </FireBaseContext.Provider>
+  );
+};
+
+export default FirebaseCreatedContextProvider;
